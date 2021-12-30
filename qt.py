@@ -1,11 +1,20 @@
 import tkinter as tk
 from tkinter import ttk
+from PIL import ImageTk, Image
 
 # root window
 root = tk.Tk()
-root.geometry('400x200')
+root.geometry('800x400')
 root.resizable(False, False)
 root.title('Demo')
+
+my_img = ImageTk.PhotoImage(Image.open("photos/adam-winger--THiqda3iGM-unsplash.jpg"))
+my_label = Label(image = my_img)
+my_label.pack(
+    ipadx=5,
+    ipady=5,
+    expand=True
+    )
 
 # add button
 add_button = ttk.Button(

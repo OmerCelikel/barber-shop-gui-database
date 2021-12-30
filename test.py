@@ -1,6 +1,4 @@
 import mysql.connector
-#from mysql.connector.connection import MySQLConnection
-#import mysql
 import tkinter as tk
 from tkinter import ttk
 
