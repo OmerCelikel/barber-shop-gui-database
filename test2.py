@@ -9,11 +9,11 @@ def adminWindow():
     window2_main = Tk()
     window2_main.geometry("1200x600")
     window2_main.title('Demo')
-    Label(window2_main, text="Admin Panel").pack()
+    Label(window2_main).pack()
 
     #ADD NEW HairDresser Saloon
 
-    titleOfAddHDS = Label(window2_main, text ="Add New HairDresser Saloon", )
+    titleOfAddHDS = Label(window2_main, text ="Add New HairDresser Saloon")
     titleOfAddHDS.place(x = 50, y = 12)
     # Defining the first row
     lblfrstrow = Label(window2_main, text ="salonID -", )
@@ -75,7 +75,7 @@ def adminWindow():
 
     #ADD NEW Employee
 
-    titleOfAddHDS = Label(window2_main, text ="Add New Employee", )
+    titleOfAddHDS = Label(window2_main, text ="Add New Employee")
     titleOfAddHDS.place(x = 350, y = 12)
     # Defining the first row
     lblfrstrow = Label(window2_main, text ="SSN -", )
@@ -116,6 +116,43 @@ def adminWindow():
     dropButton2 = Button(window2_main, text ="Drop")
     dropButton2.place(x = 500, y = 165, width = 55)
 
+    #-----------------------------------------
+
+    #Services
+
+    titleOfAddHDS = Label(window2_main, text ="Services")
+    titleOfAddHDS.place(x = 350, y = 190)
+    
+
+    # Defining the first row
+    lblfrstrow3 = Label(window2_main, text ="name -", )
+    lblfrstrow3.place(x = 350, y = 220)
+ 
+    serviceName = Entry(window2_main, width = 35)
+    serviceName.place(x = 450, y = 220, width = 100)
+  
+    # Defining the second row
+    lblsecrow3 = Label(window2_main, text ="price -")
+    lblsecrow3.place(x = 350, y = 250)
+ 
+    price = Entry(window2_main, width = 35)
+    price.place(x = 450, y = 250, width = 100)
+
+    # Defining the third row
+    lblthirdrow3 = Label(window2_main, text ="processingTime -")
+    lblthirdrow3.place(x = 350, y = 280)
+ 
+    processingTime = Entry(window2_main, width = 35)
+    processingTime.place(x = 450, y = 280, width = 100)
+
+    addButton3 = Button(window2_main, text ="Add")
+    addButton3.place(x = 450, y = 310, width = 55)
+
+    dropButton3 = Button(window2_main, text ="Drop")
+    dropButton3.place(x = 500, y = 310, width = 55)
+
+
+    #-----------------------------
 
     
     # exit button
@@ -125,11 +162,7 @@ def adminWindow():
         command=lambda: window2_main.destroy()
     )
 
-    exit_button.pack(
-        ipadx=5,
-        ipady=5,
-        expand=True
-    )
+    exit_button.place(x = 1100, y = 550)
     window2_main.mainloop()
 
 
