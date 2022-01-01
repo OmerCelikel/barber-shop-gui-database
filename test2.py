@@ -1,32 +1,43 @@
-#Import the required library
+# Import module
 from tkinter import *
-from PIL import Image, ImageTk
-from tkinter import ttk
 
-#Create an instance of tkinter window
-win= Tk()
-#Define the geometry of the window
-win.geometry("960x540")
-#Load the image
-bg= ImageTk.PhotoImage(file="./bgImagecopy.png")
-#Create a canvas
-canvas= Canvas(win,width= 400, height= 200)
-canvas.pack(expand=True, fill= BOTH)
-#Add the image in the canvas
-canvas.create_image(0,0,image=bg, anchor="nw")
+# Create object
+root = Tk()
 
+# Adjust size
+root.geometry("960x540")
 
-# exit button
-exit_button = ttk.Button(
-    text='Exit',
-    command=lambda: quit()
-)
+# Add image file
+bg = PhotoImage(file = "bgImagecopy.png")
 
-exit_button.pack(
-    ipadx=5,
-    ipady=5,
-    expand=True
-)
+# Create Canvas
+canvas1 = Canvas( root, width = 400,
+                height = 400)
+
+canvas1.pack(fill = "both", expand = True)
+
+# Display image
+canvas1.create_image( 0, 0, image = bg,
+                    anchor = "nw")
 
 
-win.mainloop()
+# Create Buttons
+button1 = Button( root, text = "Admin Login",)
+button2 = Button( root, text = "Book Now!")
+button3 = Button( root, text = "Exit")
+
+# Display Buttons
+button1_canvas = canvas1.create_window( 60, 520,
+                                    anchor = "center",
+                                    window = button1)
+
+button2_canvas = canvas1.create_window( 730, 350,
+                                    anchor = "center",
+                                    window = button2)
+
+button3_canvas = canvas1.create_window( 730, 450, 
+                                    anchor = "center",
+                                    window = button3)
+
+# Execute tkinter
+root.mainloop()
