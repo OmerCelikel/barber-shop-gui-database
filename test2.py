@@ -7,7 +7,7 @@ def adminWindow():
     #root.destroy()
 
     window2_main = Tk()
-    window2_main.geometry("1200x600")
+    window2_main.geometry("1100x400")
     window2_main.title('Demo')
     Label(window2_main).pack()
 
@@ -75,8 +75,8 @@ def adminWindow():
 
     #ADD NEW Employee
 
-    titleOfAddHDS = Label(window2_main, text ="Add New Employee")
-    titleOfAddHDS.place(x = 350, y = 12)
+    titleOfAddHDS2 = Label(window2_main, text ="Add New Employee")
+    titleOfAddHDS2.place(x = 350, y = 12)
     # Defining the first row
     lblfrstrow = Label(window2_main, text ="SSN -", )
     lblfrstrow.place(x = 350, y = 40)
@@ -120,39 +120,129 @@ def adminWindow():
 
     #Services
 
-    titleOfAddHDS = Label(window2_main, text ="Services")
-    titleOfAddHDS.place(x = 350, y = 190)
+    titleOfAddHDS3 = Label(window2_main, text ="Services")
+    titleOfAddHDS3.place(x = 350, y = 230)
     
 
     # Defining the first row
     lblfrstrow3 = Label(window2_main, text ="name -", )
-    lblfrstrow3.place(x = 350, y = 220)
+    lblfrstrow3.place(x = 350, y = 260)
  
     serviceName = Entry(window2_main, width = 35)
-    serviceName.place(x = 450, y = 220, width = 100)
+    serviceName.place(x = 450, y = 260, width = 100)
   
     # Defining the second row
     lblsecrow3 = Label(window2_main, text ="price -")
-    lblsecrow3.place(x = 350, y = 250)
+    lblsecrow3.place(x = 350, y = 290)
  
     price = Entry(window2_main, width = 35)
-    price.place(x = 450, y = 250, width = 100)
+    price.place(x = 450, y = 290, width = 100)
 
     # Defining the third row
     lblthirdrow3 = Label(window2_main, text ="processingTime -")
-    lblthirdrow3.place(x = 350, y = 280)
+    lblthirdrow3.place(x = 350, y = 320)
  
     processingTime = Entry(window2_main, width = 35)
-    processingTime.place(x = 450, y = 280, width = 100)
+    processingTime.place(x = 450, y = 320, width = 100)
 
     addButton3 = Button(window2_main, text ="Add")
-    addButton3.place(x = 450, y = 310, width = 55)
+    addButton3.place(x = 450, y = 350, width = 55)
 
     dropButton3 = Button(window2_main, text ="Drop")
-    dropButton3.place(x = 500, y = 310, width = 55)
+    dropButton3.place(x = 500, y = 350, width = 55)
 
 
     #-----------------------------
+
+    # Campaign
+
+    titleOfAddHDS4 = Label(window2_main, text ="Add Campaign")
+    titleOfAddHDS4.place(x = 600, y = 12)
+    
+    # Defining the first row
+    lblfrstrow4 = Label(window2_main, text ="campaignID -", )
+    lblfrstrow4.place(x = 600, y = 40)
+ 
+    campaignID = Entry(window2_main, width = 35)
+    campaignID.place(x = 700, y = 40, width = 100)
+  
+    # Defining the second row
+    lblsecrow2 = Label(window2_main, text ="type -")
+    lblsecrow2.place(x = 600, y = 70)
+ 
+    campaignType = Entry(window2_main, width = 35)
+    campaignType.place(x = 700, y = 70, width = 100)
+
+    # Defining the third row
+    lblthirdrow2 = Label(window2_main, text ="expirationTime -")
+    lblthirdrow2.place(x = 600, y = 100)
+ 
+    expirationTime = Entry(window2_main, width = 35)
+    expirationTime.place(x = 700, y = 100, width = 100)
+
+ 
+    addButton4 = Button(window2_main, text ="Add")
+    addButton4.place(x = 700, y = 135, width = 55)
+
+    dropButton4 = Button(window2_main, text ="Drop")
+    dropButton4.place(x = 750, y = 135, width = 55)
+
+    #-----------------------------
+
+    # Makeupartist
+
+    titleOfAddHDS5 = Label(window2_main, text ="Add Makeup Artist")
+    titleOfAddHDS5.place(x = 600, y = 230)
+
+    # Defining the first row
+    lblfrstrow5 = Label(window2_main, text ="makeupSSN -", )
+    lblfrstrow5.place(x = 600, y = 260)
+ 
+    makeupSSN = Entry(window2_main, width = 35)
+    makeupSSN.place(x = 700, y = 260, width = 100)
+
+    lblsecrow5 = Label(window2_main, text ="certificateOfExpertise -", )
+    lblsecrow5.place(x = 600, y = 290)
+ 
+    certificateOfExpertise = Entry(window2_main, width = 35)
+    certificateOfExpertise.place(x = 700, y = 290, width = 100)
+
+    addButton5 = Button(window2_main, text ="Add")
+    addButton5.place(x = 700, y = 320, width = 55)
+
+    dropButton5 = Button(window2_main, text ="Drop")
+    dropButton5.place(x = 750, y = 320, width = 55)
+
+
+    #--------------------------------
+    # Hairdresser
+
+    titleOfAddHDS6 = Label(window2_main, text ="Add Hairdresser")
+    titleOfAddHDS6.place(x = 850, y = 12)
+    
+    # Defining the first row
+    lblfrstrow6 = Label(window2_main, text ="expertSSN -", )
+    lblfrstrow6.place(x = 850, y = 40)
+ 
+    expertSSN = Entry(window2_main, width = 35)
+    expertSSN.place(x = 950, y = 40, width = 100)
+  
+    # Defining the second row
+    lblsecrow6 = Label(window2_main, text ="certificateOfExpertise -")
+    lblsecrow6.place(x = 850, y = 70)
+ 
+    certificateOfExpertise = Entry(window2_main, width = 35)
+    certificateOfExpertise.place(x = 950, y = 70, width = 100)
+
+ 
+    addButton6 = Button(window2_main, text ="Add")
+    addButton6.place(x = 950, y = 100, width = 55)
+
+    dropButton6 = Button(window2_main, text ="Drop")
+    dropButton6.place(x = 1000, y = 100, width = 55)
+
+    #-----------------------------
+
 
     
     # exit button
@@ -162,7 +252,7 @@ def adminWindow():
         command=lambda: window2_main.destroy()
     )
 
-    exit_button.place(x = 1100, y = 550)
+    exit_button.place(x = 1000, y = 350)
     window2_main.mainloop()
 
 
