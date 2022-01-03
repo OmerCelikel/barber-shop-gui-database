@@ -1,8 +1,37 @@
-# Import module
+# Import modules
+import mysql.connector
 from tkinter import *
+
+db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
+mycursor = db.cursor()
+mycursor.execute("SELECT * FROM hairdressingsalon")
+for i in mycursor:
+    print(i)
 
 #functions
 
+
+def hairDresserAdd():
+    #clear the text boxes
+    salonID.delete(0,END)
+    HDSname.delete(0,END)
+    address.delete(0,END)
+    workingHours.delete(0,END)
+    serveGender.delete(0,END)
+    provincePostcode.delete(0,END)
+    #strSalonID = str(salonID)
+    #print(type(strSalonID))
+
+def hairDresserDrop():
+    #clear the text boxes
+    salonID.delete(0,END)
+    HDSname.delete(0,END)
+    address.delete(0,END)
+    workingHours.delete(0,END)
+    serveGender.delete(0,END)
+    provincePostcode.delete(0,END)
+
+    
 def adminWindow():
     #root.destroy()
 
@@ -11,6 +40,8 @@ def adminWindow():
     window2_main.title('Demo')
     Label(window2_main).pack()
 
+
+    #-----------------------------------------
     #ADD NEW HairDresser Saloon
 
     titleOfAddHDS = Label(window2_main, text ="Add New HairDresser Saloon")
@@ -18,21 +49,21 @@ def adminWindow():
     # Defining the first row
     lblfrstrow = Label(window2_main, text ="salonID -", )
     lblfrstrow.place(x = 50, y = 40)
- 
+    global salonID
     salonID = Entry(window2_main, width = 35)
     salonID.place(x = 150, y = 40, width = 100)
   
     # Defining the second row
     lblsecrow = Label(window2_main, text ="name -")
     lblsecrow.place(x = 50, y = 70)
- 
-    name = Entry(window2_main, width = 35)
-    name.place(x = 150, y = 70, width = 100)
+    global HDSname
+    HDSname = Entry(window2_main, width = 35)
+    HDSname.place(x = 150, y = 70, width = 100)
 
     # Defining the third row
     lblsecrow = Label(window2_main, text ="address -")
     lblsecrow.place(x = 50, y = 100)
- 
+    global address
     address = Entry(window2_main, width = 35)
     address.place(x = 150, y = 100, width = 100)
 
@@ -40,14 +71,14 @@ def adminWindow():
     # Defining the fourth row
     lblsecrow = Label(window2_main, text ="workingHours -")
     lblsecrow.place(x = 50, y = 130)
- 
+    global workingHours
     workingHours = Entry(window2_main, width = 35)
     workingHours.place(x = 150, y = 130, width = 100)
 
     # Defining the fifth row
     lblsecrow = Label(window2_main, text ="serveGender -")
     lblsecrow.place(x = 50, y = 160)
- 
+    global serveGender
     serveGender = Entry(window2_main, width = 35)
     serveGender.place(x = 150, y = 160, width = 100)
 
@@ -55,7 +86,7 @@ def adminWindow():
     # Defining the sixth row
     lblsecrow = Label(window2_main, text ="provincePostco -")
     lblsecrow.place(x = 50, y = 190)
- 
+    global provincePostcode
     provincePostcode = Entry(window2_main, width = 35)
     provincePostcode.place(x = 150, y = 190, width = 100)
 
@@ -63,13 +94,11 @@ def adminWindow():
 
     # Add new HairDresser Saloon Button
  
-    addButton = Button(window2_main, text ="Add")
-    addButton.place(x = 150, y = 225, width = 55)
+    hairDresserAddButton = Button(window2_main, text ="Add", command = hairDresserAdd)
+    hairDresserAddButton.place(x = 150, y = 220, width = 55)
 
-    dropButton = Button(window2_main, text ="Drop")
-    dropButton.place(x = 200, y = 225, width = 55)
-
-
+    hairDresserDropButton = Button(window2_main, text ="Drop", command = hairDresserDrop)
+    hairDresserDropButton.place(x = 200, y = 220, width = 55)
 
     #-----------------------------------------
 
@@ -106,15 +135,12 @@ def adminWindow():
     gender = Entry(window2_main, width = 35)
     gender.place(x = 450, y = 130, width = 100)
 
-
-
-    # Add new HairDresser Saloon Button
  
-    addButton2 = Button(window2_main, text ="Add")
-    addButton2.place(x = 450, y = 165, width = 55)
+    newEmployeeAddButton = Button(window2_main, text ="Add")
+    newEmployeeAddButton.place(x = 450, y = 165, width = 55)
 
-    dropButton2 = Button(window2_main, text ="Drop")
-    dropButton2.place(x = 500, y = 165, width = 55)
+    newEmployeeDropButton = Button(window2_main, text ="Drop")
+    newEmployeeDropButton.place(x = 500, y = 165, width = 55)
 
     #-----------------------------------------
 
@@ -145,11 +171,11 @@ def adminWindow():
     processingTime = Entry(window2_main, width = 35)
     processingTime.place(x = 450, y = 320, width = 100)
 
-    addButton3 = Button(window2_main, text ="Add")
-    addButton3.place(x = 450, y = 350, width = 55)
+    servicesAddButton = Button(window2_main, text ="Add")
+    servicesAddButton.place(x = 450, y = 350, width = 55)
 
-    dropButton3 = Button(window2_main, text ="Drop")
-    dropButton3.place(x = 500, y = 350, width = 55)
+    servicesDropButton = Button(window2_main, text ="Drop")
+    servicesDropButton.place(x = 500, y = 350, width = 55)
 
 
     #-----------------------------
@@ -181,11 +207,11 @@ def adminWindow():
     expirationTime.place(x = 700, y = 100, width = 100)
 
  
-    addButton4 = Button(window2_main, text ="Add")
-    addButton4.place(x = 700, y = 135, width = 55)
+    campaignAddButton = Button(window2_main, text ="Add")
+    campaignAddButton.place(x = 700, y = 135, width = 55)
 
-    dropButton4 = Button(window2_main, text ="Drop")
-    dropButton4.place(x = 750, y = 135, width = 55)
+    campaignDropButton = Button(window2_main, text ="Drop")
+    campaignDropButton.place(x = 750, y = 135, width = 55)
 
     #-----------------------------
 
@@ -207,11 +233,11 @@ def adminWindow():
     certificateOfExpertise = Entry(window2_main, width = 35)
     certificateOfExpertise.place(x = 700, y = 290, width = 100)
 
-    addButton5 = Button(window2_main, text ="Add")
-    addButton5.place(x = 700, y = 320, width = 55)
+    makeupArtistaddButton = Button(window2_main, text ="Add")
+    makeupArtistaddButton.place(x = 700, y = 320, width = 55)
 
-    dropButton5 = Button(window2_main, text ="Drop")
-    dropButton5.place(x = 750, y = 320, width = 55)
+    makeupArtistDropButton = Button(window2_main, text ="Drop")
+    makeupArtistDropButton.place(x = 750, y = 320, width = 55)
 
 
     #--------------------------------
@@ -235,25 +261,65 @@ def adminWindow():
     certificateOfExpertise.place(x = 950, y = 70, width = 100)
 
  
-    addButton6 = Button(window2_main, text ="Add")
-    addButton6.place(x = 950, y = 100, width = 55)
+    hairDresserAddButton = Button(window2_main, text ="Add")
+    hairDresserAddButton.place(x = 950, y = 100, width = 55)
 
-    dropButton6 = Button(window2_main, text ="Drop")
-    dropButton6.place(x = 1000, y = 100, width = 55)
+    hairDresserDropButton = Button(window2_main, text ="Drop")
+    hairDresserDropButton.place(x = 1000, y = 100, width = 55)
 
     #-----------------------------
 
 
     
     # exit button
-    exit_button = Button(
+    adminPanelExitButton = Button(
         window2_main,
         text='Exit',
         command=lambda: window2_main.destroy()
     )
 
-    exit_button.place(x = 1000, y = 350)
+    adminPanelExitButton.place(x = 1000, y = 350)
     window2_main.mainloop()
+
+
+def bookWindow():
+    #root.destroy()
+    bookWindow = Tk()
+    bookWindow.geometry("960x540")
+    bookWindow.title('Book Window')
+    #Label(bookWindow).pack()
+    #fieldnames = ['salonID', 'name', 'address',"workingHours","serveGender","PostCode","Stars"]
+    mycursor.execute("SELECT * FROM hairdressingsalon limit 0,15")
+    i=0 
+    for hairDressers in mycursor: 
+        for j in range(len(hairDressers)):
+            e = Entry(bookWindow, width=10, fg='white') 
+            e.grid(row=i, column=j) 
+            e.insert(END, hairDressers[j])
+        i=i+1
+    #salonID,name,address,workingHours,serveGender,provincePostcode,SCfavorNumber
+    """
+    #goBackButton = Button( root, text = "<--",command = )
+
+    frame = Frame(bookWindow)
+    frame.pack()
+
+    listNodes = Listbox(frame, width=120, height=20, font=("Helvetica", 12))
+    listNodes.pack(side="left", fill="y")
+
+    scrollbar = Scrollbar(frame, orient="vertical")
+    scrollbar.config(command=listNodes.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    listNodes.config(yscrollcommand=scrollbar.set)
+
+    for x in range(30):
+        print(" ")
+        listNodes.insert(END, str(x))"""
+        
+
+
+    bookWindow.mainloop()
 
 
 # Create object
@@ -277,7 +343,7 @@ canvas1.create_image( 0, 0, image = bg,anchor = "nw")
 
 # Create Buttons
 button1 = Button( root, text = "Admin Login",command = adminWindow)
-button2 = Button( root, text = "Book Now!")
+button2 = Button( root, text = "Book Now!", command = bookWindow)
 button3 = Button( root, text = "Exit",command=lambda: root.quit())
 
 # Display Buttons
