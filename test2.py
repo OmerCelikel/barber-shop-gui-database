@@ -5,15 +5,37 @@ from tkinter import ttk
 
 db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
 mycursor = db.cursor()
-
+#   2022-01-05 09:00:00 Ahmet Coban type(bookedTime)
 #functions
-#global mySalonID
-def bookedSuccessfully(bookedTime):
-    mycursor.execute("SELECT * FROM employee")
-    mySalonName = str(salonName.get())
 
-    print(bookedTime)
-    print("yeey")
+def delete():
+   # Get selected item to Delete
+   selected_item = my_tree2.selection()[0]
+   print(selected_item)
+   deletedItem = selected_item
+   my_tree2.delete(selected_item)
+   print(deletedItem)
+
+def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
+    serviceName = str(serviceName.get())
+    hairDresserName = str(hairDresserName.get())
+    bookedTime = str(bookedTime.get())
+
+    mycursor.execute("SELECT * FROM employee")
+    for i in mycursor:
+        if(hairDresserName == i[2]):
+            hairdresserSSN = i[0]
+            print(hairDresserName, hairdresserSSN)
+    print("bookedTime : ", bookedTime, type(bookedTime))
+    print("ssn : ", hairdresserSSN, type(bookedTime))
+    mycursor.execute("SELECT * FROM avbDates")
+    for i in mycursor:
+        print(i[0],i[1])
+        print(type(str(i[0])))
+        if ( (hairdresserSSN == str(i[1])) and (bookedTime == str(i[0])) ):
+            print("ESİİİT")
+
+
 def nextSalonSelected(salonName):
     mycursor.execute("SELECT * FROM hairdressingsalon")
     mySalonName = str(salonName.get())
@@ -146,8 +168,20 @@ def nextSalonSelected(salonName):
             fn_entry3.grid(row=1, column=1, padx=10, pady=10)
 
 
+            update_button2 = Button(data_frame, 
+                text="Next", 
+                command=lambda serviceName = fn_entry,
+                hairDresserName = fn_entry2,
+                bookedTime = fn_entry3: bookedSuccessfully(serviceName, hairDresserName, bookedTime))
+            
+            """            
+            update_button2 = Button(data_frame, 
+            text="Next", 
+            command=lambda serviceName = fn_entry,
+            hairDresserName = fn_entry2,
+            bookedTime = fn_entry3: [bookedSuccessfully(serviceName, hairDresserName, bookedTime), delete()])"""
 
-            update_button2 = Button(data_frame, text="Next", command=lambda bookedTime = fn_entry3: bookedSuccessfully(bookedTime))
+
             update_button2.grid(row=1, column=3, padx=100, pady=10)
             
 def salonSelected_query_database2(mysalonID):
