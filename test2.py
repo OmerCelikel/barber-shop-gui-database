@@ -1,4 +1,5 @@
 # Import modules
+import time
 import mysql.connector
 from tkinter import *
 from tkinter import ttk
@@ -20,23 +21,42 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     serviceName = str(serviceName.get())
     hairDresserName = str(hairDresserName.get())
     bookedTime = str(bookedTime.get())
-
+    global hairdresserSSN
     mycursor.execute("SELECT * FROM employee")
     for i in mycursor:
         if(hairDresserName == i[2]):
             hairdresserSSN = i[0]
             print(hairDresserName, hairdresserSSN)
+            hairdresserSSN = str(hairdresserSSN)
     print("bookedTime : ", bookedTime, type(bookedTime))
-    print("ssn : ", hairdresserSSN, type(bookedTime))
+    
+    print("ssn : ", hairdresserSSN, type(hairdresserSSN))
+    #mycursor.execute("SELECT * FROM avbDates")
+    mycursor.execute("SELECT employee.SSN, employee.name, avbDates.datetime FROM avbDates, employee WHERE employee.name = '%s' AND avbDates.datetime =  '%s'" %(hairDresserName,bookedTime))
+    for i in mycursor:
+        print(i)
+    mycursor.execute("DELETE FROM avbDates WHERE avbDates.employeeSSN = '%s' AND avbDates.datetime =  '%s'" %(hairdresserSSN,bookedTime))
+    #db.commit()
+    time.sleep(2) # Sleep for 3 seconds
+    salonWindow.destroy()
+    """    
     mycursor.execute("SELECT * FROM avbDates")
     for i in mycursor:
-        print(i[0],i[1])
-        print(type(str(i[0])))
-        if ( (hairdresserSSN == str(i[1])) and (bookedTime == str(i[0])) ):
-            print("ESİİİT")
+        print(i)"""
+    successfullWindow = Tk()
+    successfullWindow.geometry("360x300")
+    successfullWindow.title('successful')
+    data_frame = LabelFrame(successfullWindow, text=" Thank You ! :) :) ")
+    data_frame.pack(fill="x", expand="yes", padx=10)
+
+    update_button2 = Button(data_frame, text="Quit",command=lambda: successfullWindow.destroy())
+    update_button2.grid(row=0, column=0, padx=130, pady=10)
+    successfullWindow.mainloop()
+
 
 
 def nextSalonSelected(salonName):
+    global salonWindow
     mycursor.execute("SELECT * FROM hairdressingsalon")
     mySalonName = str(salonName.get())
     print(" ",mySalonName)
@@ -172,7 +192,7 @@ def nextSalonSelected(salonName):
                 text="Next", 
                 command=lambda serviceName = fn_entry,
                 hairDresserName = fn_entry2,
-                bookedTime = fn_entry3: bookedSuccessfully(serviceName, hairDresserName, bookedTime))
+                bookedTime = fn_entry3: bookedSuccessfully(serviceName, hairDresserName, bookedTime), )
             
             """            
             update_button2 = Button(data_frame, 
