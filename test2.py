@@ -7,7 +7,13 @@ db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL202
 mycursor = db.cursor()
 
 #functions
-global mySalonID
+#global mySalonID
+def bookedSuccessfully(bookedTime):
+    mycursor.execute("SELECT * FROM employee")
+    mySalonName = str(salonName.get())
+
+    print(bookedTime)
+    print("yeey")
 def nextSalonSelected(salonName):
     mycursor.execute("SELECT * FROM hairdressingsalon")
     mySalonName = str(salonName.get())
@@ -26,7 +32,6 @@ def nextSalonSelected(salonName):
             #print("working time", myWorkingHours[:2]," - ",myWorkingHours[:2])
         salonNames.append(i[1])
     print(salonNames)
-
 
 
     for i in salonNames:
@@ -142,13 +147,12 @@ def nextSalonSelected(salonName):
 
 
 
-            update_button = Button(data_frame, text="Next", command=lambda salonName = fn_entry: nextSalonSelected(salonName))
-            update_button.grid(row=1, column=3, padx=100, pady=10)
+            update_button2 = Button(data_frame, text="Next", command=lambda bookedTime = fn_entry3: bookedSuccessfully(bookedTime))
+            update_button2.grid(row=1, column=3, padx=100, pady=10)
             
-
 def salonSelected_query_database2(mysalonID):
     #mycursor.execute("SELECT * FROM Employee WHERE salonID = '%s'" % mysalonID)
-    mycursor.execute("SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN")
+    mycursor.execute("SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN and employee.salonID = '%s'" % mysalonID)
     #SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN
     records2 = mycursor.fetchall()
     print(records2)
