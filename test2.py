@@ -1,6 +1,7 @@
 # Import modules
 import mysql.connector
 from tkinter import *
+from tkinter import ttk
 
 db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
 mycursor = db.cursor()
@@ -9,18 +10,32 @@ for i in mycursor:
     print(i)
 
 #functions
+def query_database():
+    mycursor.execute("SELECT * FROM hairdressingsalon")
+    records = mycursor.fetchall()
+    # Add our data to the screen
+    global count
+    count = 0
 
+    for record in records:
+        if count % 2 == 0:
+            my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]), tags=('evenrow',))
+        else:
+            my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]), tags=('oddrow',))
+        # increment counter
+        count += 1
 
-def hairDresserAdd():
+def hairDresserAdd(x,y):
     #clear the text boxes
     salonID.delete(0,END)
     HDSname.delete(0,END)
     address.delete(0,END)
     workingHours.delete(0,END)
     serveGender.delete(0,END)
+    #stars
     provincePostcode.delete(0,END)
-    #strSalonID = str(salonID)
-    #print(type(strSalonID))
+    text=int(x.get())
+    print(text)
 
 def hairDresserDrop():
     #clear the text boxes
@@ -52,6 +67,7 @@ def adminWindow():
     global salonID
     salonID = Entry(window2_main, width = 35)
     salonID.place(x = 150, y = 40, width = 100)
+
   
     # Defining the second row
     lblsecrow = Label(window2_main, text ="name -")
@@ -94,11 +110,11 @@ def adminWindow():
 
     # Add new HairDresser Saloon Button
  
-    hairDresserAddButton = Button(window2_main, text ="Add", command = hairDresserAdd)
-    hairDresserAddButton.place(x = 150, y = 220, width = 55)
+    hairDressingSalonAddButton = Button(window2_main, text ="Add", command=lambda x = salonID, y = HDSname: hairDresserAdd(x,y))
+    hairDressingSalonAddButton.place(x = 150, y = 220, width = 55)
 
-    hairDresserDropButton = Button(window2_main, text ="Drop", command = hairDresserDrop)
-    hairDresserDropButton.place(x = 200, y = 220, width = 55)
+    hairDressingSalonDropButton = Button(window2_main, text ="Drop", command = hairDresserDrop)
+    hairDressingSalonDropButton.place(x = 200, y = 220, width = 55)
 
     #-----------------------------------------
 
@@ -261,11 +277,11 @@ def adminWindow():
     certificateOfExpertise.place(x = 950, y = 70, width = 100)
 
  
-    hairDresserAddButton = Button(window2_main, text ="Add")
-    hairDresserAddButton.place(x = 950, y = 100, width = 55)
+    hairDresserAddButton2 = Button(window2_main, text ="Add")
+    hairDresserAddButton2.place(x = 950, y = 100, width = 55)
 
-    hairDresserDropButton = Button(window2_main, text ="Drop")
-    hairDresserDropButton.place(x = 1000, y = 100, width = 55)
+    hairDresserDropButton2 = Button(window2_main, text ="Drop")
+    hairDresserDropButton2.place(x = 1000, y = 100, width = 55)
 
     #-----------------------------
 
@@ -287,35 +303,73 @@ def bookWindow():
     bookWindow = Tk()
     bookWindow.geometry("960x540")
     bookWindow.title('Book Window')
-    #Label(bookWindow).pack()
-    #fieldnames = ['salonID', 'name', 'address',"workingHours","serveGender","PostCode","Stars"]
-    mycursor.execute("SELECT * FROM hairdressingsalon limit 0,15")
-    i=0 
-    for hairDressers in mycursor: 
-        for j in range(len(hairDressers)):
-            e = Entry(bookWindow, width=10, fg='white') 
-            e.grid(row=i, column=j) 
-            e.insert(END, hairDressers[j])
-        i=i+1
-    #salonID,name,address,workingHours,serveGender,provincePostcode,SCfavorNumber
-    """
-    #goBackButton = Button( root, text = "<--",command = )
+    mycursor.execute("SELECT * FROM hairdressingsalon")
+    records = mycursor.fetchall()
+    # Add Some Style
+    style = ttk.Style()
 
-    frame = Frame(bookWindow)
-    frame.pack()
+    #   Pick A Theme
+    style.theme_use('default')
 
-    listNodes = Listbox(frame, width=120, height=20, font=("Helvetica", 12))
-    listNodes.pack(side="left", fill="y")
+    # Configure the Treeview Colors
+    style.configure("Treeview",
+        background="#696969",
+        foreground="black",
+        rowheight=25,
+        fieldbackground="#696969")
 
-    scrollbar = Scrollbar(frame, orient="vertical")
-    scrollbar.config(command=listNodes.yview)
-    scrollbar.pack(side="right", fill="y")
+    # Change Selected Color
+    style.map('Treeview',
+        background=[('selected', "#347083")])
 
-    listNodes.config(yscrollcommand=scrollbar.set)
+    # Create a Treeview Frame
+    tree_frame = Frame(bookWindow)
+    tree_frame.pack(pady=10)
 
-    for x in range(30):
-        print(" ")
-        listNodes.insert(END, str(x))"""
+    # Create a Treeview Scrollbar
+    tree_scroll = Scrollbar(tree_frame)
+    tree_scroll.pack(side=RIGHT, fill=Y)
+
+    # Create The Treeview
+    global my_tree
+    my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, selectmode="extended")
+    my_tree.pack()
+
+    # Configure the Scrollbar
+    tree_scroll.config(command=my_tree.yview)
+
+    # Define Our Columns
+    my_tree['columns'] = ("salonID", "Name", "Address", "workingHours", "serveGender", "Stars", "PostCode")
+
+    # Format Our Columns
+    my_tree.column("#0", width=0, stretch=NO)
+    my_tree.column("salonID", anchor=W, width=80)
+    my_tree.column("Name", anchor=W, width=200)
+    my_tree.column("Address", anchor=CENTER, width=220)
+    my_tree.column("workingHours", anchor=CENTER, width=100)
+    my_tree.column("serveGender", anchor=CENTER, width=100)
+    my_tree.column("Stars", anchor=CENTER, width=70)
+    my_tree.column("PostCode", anchor=CENTER, width=70)
+
+
+    # Create Headings
+    my_tree.heading("#0", text="", anchor=W)
+    my_tree.heading("salonID", text="salonID", anchor=W)
+    my_tree.heading("Name", text="Name", anchor=W)
+    my_tree.heading("Address", text="Address", anchor=CENTER)
+    my_tree.heading("workingHours", text="workingHours", anchor=CENTER)
+    my_tree.heading("serveGender", text="serveGender", anchor=CENTER)
+    my_tree.heading("Stars", text="Stars", anchor=CENTER)
+    my_tree.heading("PostCode", text="PostCode", anchor=CENTER)
+
+
+    # Create Striped Row Tags
+    my_tree.tag_configure('oddrow', background="#0c661b")
+    my_tree.tag_configure('evenrow', background="#364238")
+
+
+    # Run to pull data from database on start
+    query_database()
         
 
 
@@ -329,7 +383,7 @@ root = Tk()
 root.geometry("960x540")
 root.title('Demo')
 # Add image file
-bg = PhotoImage(file = "bgImagecopy.png")
+bg = PhotoImage(file = "hairBG.png")
 
 # Create Canvas
 canvas1 = Canvas( root, width = 400,
