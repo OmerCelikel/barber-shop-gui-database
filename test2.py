@@ -5,11 +5,180 @@ from tkinter import ttk
 
 db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
 mycursor = db.cursor()
-mycursor.execute("SELECT * FROM hairdressingsalon")
-for i in mycursor:
-    print(i)
 
 #functions
+global mySalonID
+def nextSalonSelected(salonName):
+    mycursor.execute("SELECT * FROM hairdressingsalon")
+    mySalonName = str(salonName.get())
+    print(" ",mySalonName)
+    salonNames = []
+    mySalonID = 0
+
+    for i in mycursor:
+        if(mySalonName == i[1]):
+            print(i)
+            
+            mySalonID = i[0]
+            print(mySalonID)
+            myWorkingHours = i[3]
+            print(myWorkingHours)
+            #print("working time", myWorkingHours[:2]," - ",myWorkingHours[:2])
+        salonNames.append(i[1])
+    print(salonNames)
+
+
+
+    for i in salonNames:
+        if(mySalonName == i):
+            print("found")
+            print
+            salonWindow = Tk()
+            salonWindow.geometry("960x700")
+            salonWindow.title('Book Window')
+            mycursor.execute("SELECT * FROM Services")
+            records = mycursor.fetchall()
+            # Add Some Style
+            style = ttk.Style()
+
+            #   Pick A Theme
+            style.theme_use('default')
+
+            # Configure the Treeview Colors
+            style.configure("Treeview",
+                background="#696969",
+                foreground="black",
+                rowheight=25,
+                fieldbackground="#696969")
+
+            # Change Selected Color
+            style.map('Treeview',
+                background=[('selected', "#347083")])
+
+            # Create a Treeview Frame
+            tree_frame = Frame(salonWindow)
+            tree_frame.pack(padx= 0, pady=10)
+
+            # Create a Treeview Scrollbar
+            tree_scroll = Scrollbar(tree_frame)
+            tree_scroll.pack(side=RIGHT, fill=Y)
+
+            # Create The Treeview
+            global my_tree
+            my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, selectmode="extended")
+            my_tree.pack()
+
+            # Configure the Scrollbar
+            tree_scroll.config(command=my_tree.yview)
+
+            # Define Our Columns
+            my_tree['columns'] = ("ServiceName","Price","processingTime")
+
+            # Format Our Columns
+            my_tree.column("#0", width=0, stretch=NO)
+            my_tree.column("ServiceName", anchor=W, width=180)
+            my_tree.column("Price", anchor=W, width=120)
+            my_tree.column("processingTime", anchor=W, width=140)
+
+
+            # Create Headings
+            my_tree.heading("#0", text="", anchor=W)
+            my_tree.heading("ServiceName", text="ServiceName", anchor=W)
+            my_tree.heading("Price", text="Price", anchor=W)
+            my_tree.heading("processingTime", text="processingTime", anchor=W)
+            salonSelected_query_database()
+
+            # Create a Treeview Frame
+            tree_frame2 = Frame(salonWindow)
+            tree_frame2.pack(padx= 0, pady=10)
+
+            # Create a Treeview Scrollbar
+            tree_scroll2 = Scrollbar(tree_frame2)
+            tree_scroll2.pack(side=RIGHT, fill=Y)
+
+            # Create The Treeview
+            global my_tree2
+            my_tree2 = ttk.Treeview(tree_frame2, yscrollcommand=tree_scroll2.set, selectmode="extended")
+            my_tree2.pack()
+
+            # Configure the Scrollbar
+            tree_scroll2.config(command=my_tree2.yview)
+
+            # Define Our Columns
+            my_tree2['columns'] = ("HairdresserName","Gender","AVtime")
+
+            # Format Our Columns
+            my_tree2.column("#0", width=0, stretch=NO)
+            my_tree2.column("HairdresserName", anchor=W, width=180)
+            my_tree2.column("Gender", anchor=W, width=180)
+            my_tree2.column("AVtime", anchor=W, width=180)
+
+
+            # Create Headings
+            my_tree2.heading("#0", text="", anchor=W)
+            my_tree2.heading("HairdresserName", text="HairdresserName", anchor=W)
+            my_tree2.heading("Gender", text="Gender", anchor=W)
+            my_tree2.heading("AVtime", text="AVtime", anchor=W)
+            salonSelected_query_database2(mySalonID)
+
+            # Add Record Entry Boxes
+            data_frame = LabelFrame(salonWindow, text="  Choose Service, Hairdresser and Time  ")
+            data_frame.pack(fill="x", expand="yes", padx=10)
+
+            fn_label = Label(data_frame, text="Service Name")
+            fn_label.grid(row=0, column=0, padx=10, pady=10)
+            fn_entry = Entry(data_frame)
+            fn_entry.grid(row=0, column=1, padx=10, pady=10)
+
+            fn_label2 = Label(data_frame, text="Hairdresser Name")
+            fn_label2.grid(row=0, column=2, padx=10, pady=10)
+            fn_entry2 = Entry(data_frame)
+            fn_entry2.grid(row=0, column=3, padx=10, pady=10)
+
+            fn_label3 = Label(data_frame, text="Booking Time")
+            fn_label3.grid(row=1, column=0, padx=10, pady=10)
+            fn_entry3 = Entry(data_frame)
+            fn_entry3.grid(row=1, column=1, padx=10, pady=10)
+
+
+
+            update_button = Button(data_frame, text="Next", command=lambda salonName = fn_entry: nextSalonSelected(salonName))
+            update_button.grid(row=1, column=3, padx=100, pady=10)
+            
+
+def salonSelected_query_database2(mysalonID):
+    #mycursor.execute("SELECT * FROM Employee WHERE salonID = '%s'" % mysalonID)
+    mycursor.execute("SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN")
+    #SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN
+    records2 = mycursor.fetchall()
+    print(records2)
+    # Add our data to the screen
+    global count
+    count = 0
+
+    for record in records2:
+        if count % 2 == 0:
+            my_tree2.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2]) , tags=('evenrow',))
+        else:
+            my_tree2.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1],record[2]), tags=('oddrow',))
+        # increment counter
+        count += 1
+        
+def salonSelected_query_database():
+    mycursor.execute("SELECT * FROM Services")
+    records = mycursor.fetchall()
+    # Add our data to the screen
+    global count
+    count = 0
+
+    for record in records:
+        if count % 2 == 0:
+            my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2]), tags=('evenrow',))
+        else:
+            my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2]), tags=('oddrow',))
+        # increment counter
+        count += 1
+
 def query_database():
     mycursor.execute("SELECT * FROM hairdressingsalon")
     records = mycursor.fetchall()
@@ -46,7 +215,6 @@ def hairDresserDrop():
     serveGender.delete(0,END)
     provincePostcode.delete(0,END)
 
-    
 def adminWindow():
     #root.destroy()
 
@@ -297,7 +465,6 @@ def adminWindow():
     adminPanelExitButton.place(x = 1000, y = 350)
     window2_main.mainloop()
 
-
 def bookWindow():
     #root.destroy()
     bookWindow = Tk()
@@ -370,6 +537,19 @@ def bookWindow():
 
     # Run to pull data from database on start
     query_database()
+
+
+    # Add Record Entry Boxes
+    data_frame = LabelFrame(bookWindow, text="  Choose the Salon  ")
+    data_frame.pack(fill="x", expand="yes", padx=180)
+
+    fn_label = Label(data_frame, text="Hair Dressing Salon Name")
+    fn_label.grid(row=0, column=0, padx=10, pady=10)
+    fn_entry = Entry(data_frame)
+    fn_entry.grid(row=0, column=1, padx=10, pady=10)
+
+    update_button = Button(data_frame, text="Next", command=lambda salonName = fn_entry: nextSalonSelected(salonName))
+    update_button.grid(row=0, column=50, padx=100, pady=10)
         
 
 
@@ -386,8 +566,7 @@ root.title('Demo')
 bg = PhotoImage(file = "hairBG.png")
 
 # Create Canvas
-canvas1 = Canvas( root, width = 400,
-                height = 400)
+canvas1 = Canvas( root, width = 400,height = 400)
 
 canvas1.pack(fill = "both", expand = True)
 

@@ -28,8 +28,10 @@ def allBars():
         db.rollback()
         print("Error occured")
 
+mysalonID = 3
+mycursor.execute("SELECT * FROM Employee WHERE salonID = '%s'" % mysalonID)
 
-mycursor.execute("SELECT * FROM Bars")
+#cursor.execute("INSERT INTO table VALUES (%s, %s, %s)", (var1, var2, var3))
 for i in mycursor:
 	print(i)
 
@@ -42,8 +44,7 @@ root.title('Demo')
 # add button
 add_button = ttk.Button(
     root,
-    text='Add New Bar',
-    command= allBars
+    text='Add New Bar'
 )
 db.commit()
 add_button.pack(
