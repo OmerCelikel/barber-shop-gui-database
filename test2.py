@@ -11,6 +11,28 @@ mycursor = db.cursor()
 #functions
 
 
+def last(SSN, Name, Surname, Gender):
+
+    newSSN =str(SSN.get())
+    newName = str(Name.get())
+    newSurname = str(Surname.get())
+    newGender = str(Gender.get())
+
+    successfullWindow.destroy()
+    lastWindow = Tk()
+    lastWindow.geometry("360x300")
+    lastWindow.title('successful')
+    data_frame = LabelFrame(lastWindow, text=" Thank You ! :) :) ")
+    data_frame.pack(fill="x", expand="yes", padx=10)
+
+    update_button2 = Button(data_frame, text="Quit",command=lambda: lastWindow.destroy())
+    update_button2.grid(row=0, column=0, padx=130, pady=10)
+
+
+    mycursor.execute("INSERT INTO customer VALUES(%s,%s,%s,%s)", (int(newSSN), newName, newSurname, newGender))
+    db.commit()
+
+    lastWindow.mainloop()
 
 def dialog1(Username,Password):
     username=Username.get()
@@ -242,12 +264,58 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
         print(i)
     mycursor.execute("DELETE FROM avbDates WHERE avbDates.employeeSSN = '%s' AND avbDates.datetime =  '%s'" %(hairdresserSSN,bookedTime))
     #db.commit()
-    time.sleep(2) # Sleep for 3 seconds
+    time.sleep(1) # Sleep for 3 seconds
     salonWindow.destroy()
-    """    
-    mycursor.execute("SELECT * FROM avbDates")
-    for i in mycursor:
-        print(i)"""
+    global successfullWindow
+    successfullWindow = Tk()
+    successfullWindow.geometry("460x400")
+    successfullWindow.title('successful mu')
+
+    # Add Record Entry Boxes
+    data_framea = LabelFrame(successfullWindow, text="  Registration  ")
+    data_framea.pack(fill="x", expand="yes", padx=10)
+    global fn_entrya
+    global fn_entry2a
+    global fn_entry3a
+    global fn_entry4a
+
+    global SSN
+    global Name
+    global Surname
+    global Gender
+    fn_labela = Label(data_framea, text=" SSN -")
+    fn_labela.grid(row=0, column=0, padx=10, pady=10)
+    fn_entrya = Entry(data_framea)
+    fn_entrya.grid(row=0, column=1, padx=10, pady=10)
+
+    fn_label2a = Label(data_framea, text=" Name -")
+    fn_label2a.grid(row=1, column=0, padx=10, pady=10)
+    fn_entry2a = Entry(data_framea)
+    fn_entry2a.grid(row=1, column=1, padx=10, pady=10)
+
+    fn_label3a = Label(data_framea, text="Surname -")
+    fn_label3a.grid(row=2, column=0, padx=10, pady=10)
+    fn_entry3a = Entry(data_framea)
+    fn_entry3a.grid(row=2, column=1, padx=10, pady=10)
+
+    fn_label4a = Label(data_framea, text="Gender -")
+    fn_label4a.grid(row=3, column=0, padx=10, pady=10)
+    fn_entry4a = Entry(data_framea)
+    fn_entry4a.grid(row=3, column=1, padx=10, pady=10)
+
+
+    update_button3 = Button(data_framea, 
+        text="Next", 
+        command=lambda 
+        SSN = fn_entrya,
+        Name = fn_entry2a,
+        Surname = fn_entry3a,
+        Gender = fn_entry4a: last(SSN, Name, Surname, Gender) )
+    update_button3.grid(row=4, column=1, padx=100, pady=10)
+    successfullWindow.mainloop()
+    
+    """
+    # 2022-01-06 11:00:00
     successfullWindow = Tk()
     successfullWindow.geometry("360x300")
     successfullWindow.title('successful')
@@ -256,7 +324,7 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
 
     update_button2 = Button(data_frame, text="Quit",command=lambda: successfullWindow.destroy())
     update_button2.grid(row=0, column=0, padx=130, pady=10)
-    successfullWindow.mainloop()
+    successfullWindow.mainloop()"""
 
 def nextSalonSelected(salonName):
     global salonWindow
@@ -395,7 +463,7 @@ def nextSalonSelected(salonName):
                 text="Next", 
                 command=lambda serviceName = fn_entry,
                 hairDresserName = fn_entry2,
-                bookedTime = fn_entry3: bookedSuccessfully(serviceName, hairDresserName, bookedTime), )
+                bookedTime = fn_entry3: bookedSuccessfully(serviceName, hairDresserName, bookedTime))
             
             """            
             update_button2 = Button(data_frame, 
