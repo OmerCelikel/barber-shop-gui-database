@@ -7,8 +7,10 @@ import tkinter.messagebox as box
 
 db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
 mycursor = db.cursor()
-#   2022-01-05 09:00:00 Ahmet Coban type(bookedTime)
+
 #functions
+
+
 
 def dialog1(Username,Password):
     username=Username.get()
@@ -49,6 +51,72 @@ def adminLoginWindow():
     btn.pack(side = RIGHT , padx =5)
     frame.pack(padx=100,pady = 19)
     adminLoginWindow.mainloop()
+
+def showemployeeDB():
+    showemployeeDB = Tk()
+    showemployeeDB.geometry("900x240")
+    showemployeeDB.title('Database')
+    mycursor.execute("SELECT * FROM hairdressingsalon")
+    records = mycursor.fetchall()
+    # Add Some Style
+    style = ttk.Style()
+
+    #   Pick A Theme
+    style.theme_use('default')
+
+    # Configure the Treeview Colors
+    style.configure("Treeview",
+        background="#696969",
+        foreground="black",
+        rowheight=25,
+        fieldbackground="#696969")
+
+    # Change Selected Color
+    style.map('Treeview',
+        background=[('selected', "#347083")])
+
+    # Create a Treeview Frame
+    tree_frame = Frame(showemployeeDB)
+    tree_frame.pack(pady=10)
+
+    # Create a Treeview Scrollbar
+    tree_scroll = Scrollbar(tree_frame)
+    tree_scroll.pack(side=RIGHT, fill=Y)
+
+    # Create The Treeview
+    global my_treeE
+    my_treeE = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, selectmode="extended")
+    my_treeE.pack()
+
+    # Configure the Scrollbar
+    tree_scroll.config(command=my_treeE.yview)
+
+    # Define Our Columns
+    my_treeE['columns'] = ("SSN", "salonID", "Name", "Gender")
+
+    # Format Our Columns
+    my_treeE.column("#0", width=0, stretch=NO)
+    my_treeE.column("SSN", anchor=W, width=80)
+    my_treeE.column("salonID", anchor=W, width=200)
+    my_treeE.column("Name", anchor=CENTER, width=220)
+    my_treeE.column("Gender", anchor=CENTER, width=100)
+
+
+
+    # Create Headings
+    my_treeE.heading("#0", text="", anchor=W)
+    my_treeE.heading("SSN", text="SSN", anchor=W)
+    my_treeE.heading("salonID", text="salonID", anchor=W)
+    my_treeE.heading("Name", text="Name", anchor=CENTER)
+    my_treeE.heading("Gender", text="Gender", anchor=CENTER)
+
+
+    # Create Striped Row Tags
+    my_treeE.tag_configure('oddrow', background="#0c661b")
+    my_treeE.tag_configure('evenrow', background="#364238")
+
+    # Run to pull data from database on start
+    query_databaseForEmployee()
 
 def showHDSDB():
     showHDSDB = Tk()
@@ -122,7 +190,6 @@ def showHDSDB():
     # Run to pull data from database on start
     query_database()
 
-
 def addWindow():
     print("Added Successfully")
     transaction = Tk()
@@ -174,7 +241,7 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     for i in mycursor:
         print(i)
     mycursor.execute("DELETE FROM avbDates WHERE avbDates.employeeSSN = '%s' AND avbDates.datetime =  '%s'" %(hairdresserSSN,bookedTime))
-    db.commit()
+    #db.commit()
     time.sleep(2) # Sleep for 3 seconds
     salonWindow.destroy()
     """    
@@ -357,7 +424,6 @@ def salonSelected_query_database2(mysalonID):
             my_tree2.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1],record[2]), tags=('oddrow',))
         # increment counter
         count += 1
-        
 def salonSelected_query_database():
     mycursor.execute("SELECT * FROM Services")
     records = mycursor.fetchall()
@@ -372,7 +438,6 @@ def salonSelected_query_database():
             my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2]), tags=('oddrow',))
         # increment counter
         count += 1
-
 def query_database():
     mycursor.execute("SELECT * FROM hairdressingsalon")
     records = mycursor.fetchall()
@@ -388,6 +453,22 @@ def query_database():
         # increment counter
         count += 1
 
+def query_databaseForEmployee():
+    mycursor.execute("SELECT * FROM employee")
+    records = mycursor.fetchall()
+    # Add our data to the screen
+    global count
+    count = 0
+
+    for record in records:
+        if count % 2 == 0:
+            my_treeE.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3]), tags=('evenrow',))
+        else:
+            my_treeE.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3]), tags=('oddrow',))
+        # increment counter
+        count += 1
+
+
 def hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myProvincePostCode):
     SCfavorNumber = 1
     newmySalonID =str(mySalonID.get())
@@ -397,22 +478,8 @@ def hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myP
     newmyServeGender = str(myServeGender.get())
     newmyProvincePostCode = str(myProvincePostCode.get())
     
-    #print(newmySalonID, newmyHDSname, newmyAdress, newmyWorkingHours,newmyServeGender,SCfavorNumber, newmyProvincePostCode)
-
-    #savequery2 = "INSERT INTO HairdressingSalon(salonID, name, address, workingHours, serveGender, SCfavorNumber, provincePostcode) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-    #val2 = (newmySalonID, newmyHDSname, newmyAdress,newmyWorkingHours,newmyServeGender,newmyProvincePostCode)
-    #mycursor.execute(savequery2, val2)
     mycursor.execute("INSERT INTO HairdressingSalon VALUES(%s,%s,%s,%s,%s,%s,%s)", (int(newmySalonID), newmyHDSname, newmyAdress,int(newmyWorkingHours),newmyServeGender,SCfavorNumber,int(newmyProvincePostCode)))
     db.commit()
-    """try:
-                    mycursor.execute(savequery, val)
-                    db.commit()
-                    myresult = mycursor.fetchall()
-                except:
-                    db.rollback()
-                    print("Error occured")"""
-
-        #clear the text boxes
     salonID.delete(0,END)
     HDSname.delete(0,END)
     address.delete(0,END)
@@ -421,11 +488,10 @@ def hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myP
     #stars
     provincePostcode.delete(0,END)
     addWindow()
-
 def hairDresserDrop(mySalonID2):
     newmySalonID =str(mySalonID2.get())
     mycursor.execute("DELETE FROM HairdressingSalon WHERE HairdressingSalon.salonID= '%s'" % newmySalonID)
-    #db.commit()
+    db.commit()
     print("DELETED")
     #clear the text boxes
     salonID.delete(0,END)
@@ -436,9 +502,33 @@ def hairDresserDrop(mySalonID2):
     provincePostcode.delete(0,END)
     dropWindow()
 
-def adminWindow():
-    #root.destroy()
+def employeeAdd(mySSN,mysalonID2,mynameE,mygender):
+    newmySSN =str(mySSN.get())
+    newmysalonID2 = str(mysalonID2.get())
+    newmynameE = str(mynameE.get())
+    newmygender = str(mygender.get())
+    mycursor.execute("INSERT INTO employee VALUES(%s,%s,%s,%s)", (int(newmySSN), int(newmysalonID2), newmynameE,newmygender))
+    db.commit()
+    SSN.delete(0,END)
+    salonID2.delete(0,END)
+    nameE.delete(0,END)
+    gender.delete(0,END)
+    addWindow()
+def employeeDrop(mySSN,mynameE):
+    # %(hairDresserName,bookedTime)
+    newmySSN =str(mySSN.get())
+    newmynameE = str(mynameE.get())
+    intSSN = int(newmySSN)
+    mycursor.execute("DELETE FROM employee WHERE employee.SSN= '%s' AND employee.name = '%s'" %(intSSN,newmynameE))
+    db.commit()
+    SSN.delete(0,END)
+    salonID2.delete(0,END)
+    nameE.delete(0,END)
+    gender.delete(0,END)
+    dropWindow()
 
+
+def adminWindow():
     window2_main = Tk()
     window2_main.geometry("1100x500")
     window2_main.title('Demo')
@@ -517,44 +607,51 @@ def adminWindow():
     #-----------------------------------------
 
     #ADD NEW Employee
-
     titleOfAddHDS2 = Label(window2_main, text ="Add New Employee")
     titleOfAddHDS2.place(x = 350, y = 12)
     # Defining the first row
     lblfrstrow = Label(window2_main, text ="SSN -", )
     lblfrstrow.place(x = 350, y = 40)
- 
+    global SSN
     SSN = Entry(window2_main, width = 35)
     SSN.place(x = 450, y = 40, width = 100)
   
     # Defining the second row
     lblsecrow2 = Label(window2_main, text ="salonID -")
     lblsecrow2.place(x = 350, y = 70)
- 
-    salonID = Entry(window2_main, width = 35)
-    salonID.place(x = 450, y = 70, width = 100)
+    global salonID2
+    salonID2 = Entry(window2_main, width = 35)
+    salonID2.place(x = 450, y = 70, width = 100)
 
     # Defining the third row
     lblthirdrow2 = Label(window2_main, text ="name -")
     lblthirdrow2.place(x = 350, y = 100)
- 
+    global nameE
     nameE = Entry(window2_main, width = 35)
     nameE.place(x = 450, y = 100, width = 100)
-
-
     # Defining the fourth row
     lblfourthrow2 = Label(window2_main, text ="gender -")
     lblfourthrow2.place(x = 350, y = 130)
- 
+    global gender
     gender = Entry(window2_main, width = 35)
     gender.place(x = 450, y = 130, width = 100)
-
- 
-    newEmployeeAddButton = Button(window2_main, text ="Add")
+    
+    newEmployeeAddButton = Button(window2_main, text ="Add", command=lambda 
+        mySSN = SSN, 
+        mysalonID2 = salonID2, 
+        mynameE = nameE, 
+        mygender = gender:
+        employeeAdd(mySSN,mysalonID2,mynameE,mygender) )
     newEmployeeAddButton.place(x = 450, y = 165, width = 55)
-
-    newEmployeeDropButton = Button(window2_main, text ="Drop")
+    newEmployeeDropButton = Button(window2_main, text ="Drop", command=lambda
+        mySSN = SSN,
+        mynameE = nameE:
+        employeeDrop(mySSN,mynameE)
+        )
     newEmployeeDropButton.place(x = 500, y = 165, width = 55)
+
+    showHDSDBbtn2 = Button(window2_main, text ="Show Database", command = showemployeeDB)
+    showHDSDBbtn2.place(x = 445, y = 195, width = 120)
 
     #-----------------------------------------
 
