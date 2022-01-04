@@ -3,11 +3,125 @@ import time
 import mysql.connector
 from tkinter import *
 from tkinter import ttk
+import tkinter.messagebox as box
 
 db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
 mycursor = db.cursor()
 #   2022-01-05 09:00:00 Ahmet Coban type(bookedTime)
 #functions
+
+def dialog1(Username,Password):
+    username=Username.get()
+    password = Password.get()
+    if (username == 'adminIlker' and  password == '1234'):
+        adminLoginWindow.destroy()
+        box.showinfo('info','Correct Login')
+        adminWindow()
+    else:
+        box.showinfo('info','Invalid Login')
+
+def adminLoginWindow():
+    global adminLoginWindow
+    adminLoginWindow = Tk()
+    adminLoginWindow.title('Admin Login')
+
+    frame = Frame(adminLoginWindow)
+
+    Label1 = Label(adminLoginWindow,text = 'Username:')
+    Label1.pack(padx=15,pady= 5)
+    entry1 = Entry(adminLoginWindow,bd =5)
+    entry1.pack(padx=15, pady=5)
+
+
+
+    Label2 = Label(adminLoginWindow,text = 'Password: ')
+    Label2.pack(padx = 15,pady=6)
+
+    entry2 = Entry(adminLoginWindow, bd=5)
+    entry2.pack(padx = 15,pady=7)
+
+
+
+
+    btn = Button(frame, text = 'Check Login',command=lambda  Username = entry1, Password = entry2 : dialog1(Username,Password))
+
+
+    btn.pack(side = RIGHT , padx =5)
+    frame.pack(padx=100,pady = 19)
+    adminLoginWindow.mainloop()
+
+def showHDSDB():
+    showHDSDB = Tk()
+    showHDSDB.geometry("900x240")
+    showHDSDB.title('Database')
+    mycursor.execute("SELECT * FROM hairdressingsalon")
+    records = mycursor.fetchall()
+    # Add Some Style
+    style = ttk.Style()
+
+    #   Pick A Theme
+    style.theme_use('default')
+
+    # Configure the Treeview Colors
+    style.configure("Treeview",
+        background="#696969",
+        foreground="black",
+        rowheight=25,
+        fieldbackground="#696969")
+
+    # Change Selected Color
+    style.map('Treeview',
+        background=[('selected', "#347083")])
+
+    # Create a Treeview Frame
+    tree_frame = Frame(showHDSDB)
+    tree_frame.pack(pady=10)
+
+    # Create a Treeview Scrollbar
+    tree_scroll = Scrollbar(tree_frame)
+    tree_scroll.pack(side=RIGHT, fill=Y)
+
+    # Create The Treeview
+    global my_tree
+    my_tree = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, selectmode="extended")
+    my_tree.pack()
+
+    # Configure the Scrollbar
+    tree_scroll.config(command=my_tree.yview)
+
+    # Define Our Columns
+    my_tree['columns'] = ("salonID", "Name", "Address", "workingHours", "serveGender", "Stars", "PostCode")
+
+    # Format Our Columns
+    my_tree.column("#0", width=0, stretch=NO)
+    my_tree.column("salonID", anchor=W, width=80)
+    my_tree.column("Name", anchor=W, width=200)
+    my_tree.column("Address", anchor=CENTER, width=220)
+    my_tree.column("workingHours", anchor=CENTER, width=100)
+    my_tree.column("serveGender", anchor=CENTER, width=100)
+    my_tree.column("Stars", anchor=CENTER, width=70)
+    my_tree.column("PostCode", anchor=CENTER, width=70)
+
+
+    # Create Headings
+    my_tree.heading("#0", text="", anchor=W)
+    my_tree.heading("salonID", text="salonID", anchor=W)
+    my_tree.heading("Name", text="Name", anchor=W)
+    my_tree.heading("Address", text="Address", anchor=CENTER)
+    my_tree.heading("workingHours", text="workingHours", anchor=CENTER)
+    my_tree.heading("serveGender", text="serveGender", anchor=CENTER)
+    my_tree.heading("Stars", text="Stars", anchor=CENTER)
+    my_tree.heading("PostCode", text="PostCode", anchor=CENTER)
+
+
+    # Create Striped Row Tags
+    my_tree.tag_configure('oddrow', background="#0c661b")
+    my_tree.tag_configure('evenrow', background="#364238")
+
+
+    # Run to pull data from database on start
+    query_database()
+
 
 def addWindow():
     print("Added Successfully")
@@ -20,6 +134,7 @@ def addWindow():
     update_button2 = Button(data_frame, text="Quit",command=lambda: transaction.destroy())
     update_button2.grid(row=0, column=0, padx=130, pady=10)
     transaction.mainloop()
+
 def dropWindow():
     print("Dropped Successfully!")
     transaction = Tk()
@@ -59,7 +174,7 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     for i in mycursor:
         print(i)
     mycursor.execute("DELETE FROM avbDates WHERE avbDates.employeeSSN = '%s' AND avbDates.datetime =  '%s'" %(hairdresserSSN,bookedTime))
-    #db.commit()
+    db.commit()
     time.sleep(2) # Sleep for 3 seconds
     salonWindow.destroy()
     """    
@@ -282,10 +397,7 @@ def hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myP
     newmyServeGender = str(myServeGender.get())
     newmyProvincePostCode = str(myProvincePostCode.get())
     
-    print()
-    print(newmySalonID, newmyHDSname, newmyAdress, newmyWorkingHours,newmyServeGender,SCfavorNumber, newmyProvincePostCode)
-
-    print()
+    #print(newmySalonID, newmyHDSname, newmyAdress, newmyWorkingHours,newmyServeGender,SCfavorNumber, newmyProvincePostCode)
 
     #savequery2 = "INSERT INTO HairdressingSalon(salonID, name, address, workingHours, serveGender, SCfavorNumber, provincePostcode) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     #val2 = (newmySalonID, newmyHDSname, newmyAdress,newmyWorkingHours,newmyServeGender,newmyProvincePostCode)
@@ -309,8 +421,6 @@ def hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myP
     #stars
     provincePostcode.delete(0,END)
     addWindow()
-    
-
 
 def hairDresserDrop(mySalonID2):
     newmySalonID =str(mySalonID2.get())
@@ -330,7 +440,7 @@ def adminWindow():
     #root.destroy()
 
     window2_main = Tk()
-    window2_main.geometry("1100x400")
+    window2_main.geometry("1100x500")
     window2_main.title('Demo')
     Label(window2_main).pack()
     #-----------------------------------------
@@ -401,6 +511,9 @@ def adminWindow():
     hairDressingSalonDropButton = Button(window2_main, text ="Drop", command=lambda  mySalonID2 = salonID : hairDresserDrop(mySalonID2))
     hairDressingSalonDropButton.place(x = 200, y = 220, width = 55)
 
+    showHDSDBbtn = Button(window2_main, text ="Show Database", command = showHDSDB)
+    showHDSDBbtn.place(x = 145, y = 250, width = 120)
+
     #-----------------------------------------
 
     #ADD NEW Employee
@@ -448,35 +561,35 @@ def adminWindow():
     #Services
 
     titleOfAddHDS3 = Label(window2_main, text ="Services")
-    titleOfAddHDS3.place(x = 350, y = 230)
+    titleOfAddHDS3.place(x = 350, y = 270)
     
 
     # Defining the first row
     lblfrstrow3 = Label(window2_main, text ="name -", )
-    lblfrstrow3.place(x = 350, y = 260)
+    lblfrstrow3.place(x = 350, y = 300)
  
     serviceName = Entry(window2_main, width = 35)
-    serviceName.place(x = 450, y = 260, width = 100)
+    serviceName.place(x = 450, y = 300, width = 100)
   
     # Defining the second row
     lblsecrow3 = Label(window2_main, text ="price -")
-    lblsecrow3.place(x = 350, y = 290)
+    lblsecrow3.place(x = 350, y = 330)
  
     price = Entry(window2_main, width = 35)
-    price.place(x = 450, y = 290, width = 100)
+    price.place(x = 450, y = 330, width = 100)
 
     # Defining the third row
     lblthirdrow3 = Label(window2_main, text ="processingTime -")
-    lblthirdrow3.place(x = 350, y = 320)
+    lblthirdrow3.place(x = 350, y = 360)
  
     processingTime = Entry(window2_main, width = 35)
-    processingTime.place(x = 450, y = 320, width = 100)
+    processingTime.place(x = 450, y = 360, width = 100)
 
     servicesAddButton = Button(window2_main, text ="Add")
-    servicesAddButton.place(x = 450, y = 350, width = 55)
+    servicesAddButton.place(x = 450, y = 390, width = 55)
 
     servicesDropButton = Button(window2_main, text ="Drop")
-    servicesDropButton.place(x = 500, y = 350, width = 55)
+    servicesDropButton.place(x = 500, y = 390, width = 55)
 
 
     #-----------------------------
@@ -519,26 +632,26 @@ def adminWindow():
     # Makeupartist
 
     titleOfAddHDS5 = Label(window2_main, text ="Add Makeup Artist")
-    titleOfAddHDS5.place(x = 600, y = 230)
+    titleOfAddHDS5.place(x = 600, y = 270)
 
     # Defining the first row
     lblfrstrow5 = Label(window2_main, text ="makeupSSN -", )
-    lblfrstrow5.place(x = 600, y = 260)
+    lblfrstrow5.place(x = 600, y = 300)
  
     makeupSSN = Entry(window2_main, width = 35)
-    makeupSSN.place(x = 700, y = 260, width = 100)
+    makeupSSN.place(x = 700, y = 300, width = 100)
 
     lblsecrow5 = Label(window2_main, text ="certificateOfExpertise -", )
-    lblsecrow5.place(x = 600, y = 290)
+    lblsecrow5.place(x = 600, y = 330)
  
     certificateOfExpertise = Entry(window2_main, width = 35)
-    certificateOfExpertise.place(x = 700, y = 290, width = 100)
+    certificateOfExpertise.place(x = 700, y = 330, width = 100)
 
     makeupArtistaddButton = Button(window2_main, text ="Add")
-    makeupArtistaddButton.place(x = 700, y = 320, width = 55)
+    makeupArtistaddButton.place(x = 700, y = 360, width = 55)
 
     makeupArtistDropButton = Button(window2_main, text ="Drop")
-    makeupArtistDropButton.place(x = 750, y = 320, width = 55)
+    makeupArtistDropButton.place(x = 750, y = 360, width = 55)
 
 
     #--------------------------------
@@ -579,7 +692,7 @@ def adminWindow():
         command=lambda: window2_main.destroy()
     )
 
-    adminPanelExitButton.place(x = 1000, y = 350)
+    adminPanelExitButton.place(x = 1000, y = 450)
     window2_main.mainloop()
 
 def bookWindow():
@@ -623,7 +736,7 @@ def bookWindow():
     tree_scroll.config(command=my_tree.yview)
 
     # Define Our Columns
-    my_tree['columns'] = ("salonID", "Name", "Address", "workingHours", "serveGender", "Stars", "PostCode")
+    my_tree['columns'] = ("salonID", "Name", "Address", "workingHours", "serveGender", "Rating", "PostCode")
 
     # Format Our Columns
     my_tree.column("#0", width=0, stretch=NO)
@@ -632,7 +745,7 @@ def bookWindow():
     my_tree.column("Address", anchor=CENTER, width=220)
     my_tree.column("workingHours", anchor=CENTER, width=100)
     my_tree.column("serveGender", anchor=CENTER, width=100)
-    my_tree.column("Stars", anchor=CENTER, width=70)
+    my_tree.column("Rating", anchor=CENTER, width=70)
     my_tree.column("PostCode", anchor=CENTER, width=70)
 
 
@@ -643,7 +756,7 @@ def bookWindow():
     my_tree.heading("Address", text="Address", anchor=CENTER)
     my_tree.heading("workingHours", text="workingHours", anchor=CENTER)
     my_tree.heading("serveGender", text="serveGender", anchor=CENTER)
-    my_tree.heading("Stars", text="Stars", anchor=CENTER)
+    my_tree.heading("Rating", text="Rating", anchor=CENTER)
     my_tree.heading("PostCode", text="PostCode", anchor=CENTER)
 
 
@@ -692,7 +805,7 @@ canvas1.create_image( 0, 0, image = bg,anchor = "nw")
 
 
 # Create Buttons
-button1 = Button( root, text = "Admin Login",command = adminWindow)
+button1 = Button( root, text = "Admin Login",command = adminLoginWindow)
 button2 = Button( root, text = "Book Now!", command = bookWindow)
 button3 = Button( root, text = "Exit",command=lambda: root.quit())
 
