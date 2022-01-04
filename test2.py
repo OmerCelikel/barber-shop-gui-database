@@ -4,12 +4,14 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.messagebox as box
 
+#connecting with database
+#Type your password in the password field.
 db = mysql.connector.connect(host = "localhost",user = "root",passwd = "MySQL2020.", database = "hairDresser")
 mycursor = db.cursor()
 
 #functions
 
-
+#When the operation is successful
 def last(SSN, Name, Surname, Gender):
 
     newSSN =str(SSN.get())
@@ -33,10 +35,11 @@ def last(SSN, Name, Surname, Gender):
 
     lastWindow.mainloop()
 
+#admin name password check
 def dialog1(Username,Password):
     username=Username.get()
     password = Password.get()
-    if (username == 'adminIlker' and  password == '1234'):
+    if (username == 'adminOmer' and  password == '1234'):
         adminLoginWindow.destroy()
         box.showinfo('info','Correct Login')
         adminWindow()
@@ -72,6 +75,8 @@ def adminLoginWindow():
     btn.pack(side = RIGHT , padx =5)
     frame.pack(padx=100,pady = 19)
     adminLoginWindow.mainloop()
+
+# the following 3 functions open a new page and show the database information
 def showCustDB():
     showcustomerDB = Tk()
     showcustomerDB.geometry("450x340")
@@ -135,8 +140,6 @@ def showCustDB():
 
     # Run to pull data from database on start
     query_databaseForCustomer()
-
-
 def showemployeeDB():
     showemployeeDB = Tk()
     showemployeeDB.geometry("900x240")
@@ -202,7 +205,6 @@ def showemployeeDB():
 
     # Run to pull data from database on start
     query_databaseForEmployee()
-
 def showHDSDB():
     showHDSDB = Tk()
     showHDSDB.geometry("900x240")
@@ -275,6 +277,7 @@ def showHDSDB():
     # Run to pull data from database on start
     query_database()
 
+# Window where addition
 def addWindow():
     print("Added Successfully")
     transaction = Tk()
@@ -307,6 +310,7 @@ def delete():
    my_tree2.delete(selected_item)
    print(deletedItem)
 
+# Retrieves user information
 def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     serviceName = str(serviceName.get())
     hairDresserName = str(hairDresserName.get())
@@ -326,7 +330,7 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     for i in mycursor:
         print(i)
     mycursor.execute("DELETE FROM avbDates WHERE avbDates.employeeSSN = '%s' AND avbDates.datetime =  '%s'" %(hairdresserSSN,bookedTime))
-    #db.commit()
+    db.commit()
     salonWindow.destroy()
     global successfullWindow
     successfullWindow = Tk()
@@ -388,6 +392,7 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     update_button2.grid(row=0, column=0, padx=130, pady=10)
     successfullWindow.mainloop()"""
 
+# selects selectable hairdresser, time, service
 def nextSalonSelected(salonName):
     global salonWindow
     mycursor.execute("SELECT * FROM hairdressingsalon")
@@ -537,8 +542,8 @@ def nextSalonSelected(salonName):
 
             update_button2.grid(row=1, column=3, padx=100, pady=10)
             
+#The following 3 functions show the sql codes needed to create the tables
 def salonSelected_query_database2(mysalonID):
-    #mycursor.execute("SELECT * FROM Employee WHERE salonID = '%s'" % mysalonID)
     mycursor.execute("SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN and employee.salonID = '%s'" % mysalonID)
     #SELECT employee.name, employee.gender, avbDates.datetime FROM employee, avbDates WHERE employee.SSN = avbDates.employeeSSN
     records2 = mycursor.fetchall()
@@ -672,7 +677,7 @@ def employeeDrop(mySSN,mynameE):
     gender.delete(0,END)
     dropWindow()
 
-
+# Window where add or drop all thinks.
 def adminWindow():
     window2_main = Tk()
     window2_main.geometry("1100x500")
@@ -941,6 +946,7 @@ def adminWindow():
 
     window2_main.mainloop()
 
+#Shows barber list
 def bookWindow():
     #root.destroy()
     bookWindow = Tk()
