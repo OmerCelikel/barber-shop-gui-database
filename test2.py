@@ -9,6 +9,29 @@ mycursor = db.cursor()
 #   2022-01-05 09:00:00 Ahmet Coban type(bookedTime)
 #functions
 
+def addWindow():
+    print("Added Successfully")
+    transaction = Tk()
+    transaction.geometry("360x300")
+    transaction.title('successful')
+    data_frame = LabelFrame(transaction, text=" Added Successfully ! ")
+    data_frame.pack(fill="x", expand="yes", padx=10)
+
+    update_button2 = Button(data_frame, text="Quit",command=lambda: transaction.destroy())
+    update_button2.grid(row=0, column=0, padx=130, pady=10)
+    transaction.mainloop()
+def dropWindow():
+    print("Dropped Successfully!")
+    transaction = Tk()
+    transaction.geometry("360x300")
+    transaction.title('successful')
+    data_frame = LabelFrame(transaction, text=" Dropped Successfully ! ")
+    data_frame.pack(fill="x", expand="yes", padx=10)
+
+    update_button2 = Button(data_frame, text="Quit",command=lambda: transaction.destroy())
+    update_button2.grid(row=0, column=0, padx=130, pady=10)
+    transaction.mainloop()
+
 def delete():
    # Get selected item to Delete
    selected_item = my_tree2.selection()[0]
@@ -52,8 +75,6 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
     update_button2 = Button(data_frame, text="Quit",command=lambda: successfullWindow.destroy())
     update_button2.grid(row=0, column=0, padx=130, pady=10)
     successfullWindow.mainloop()
-
-
 
 def nextSalonSelected(salonName):
     global salonWindow
@@ -252,8 +273,34 @@ def query_database():
         # increment counter
         count += 1
 
-def hairDresserAdd(x,y):
-    #clear the text boxes
+def hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myProvincePostCode):
+    SCfavorNumber = 1
+    newmySalonID =str(mySalonID.get())
+    newmyHDSname = str(myHDSname.get())
+    newmyAdress = str(myAdress.get())
+    newmyWorkingHours = str(myWorkingHours.get())
+    newmyServeGender = str(myServeGender.get())
+    newmyProvincePostCode = str(myProvincePostCode.get())
+    
+    print()
+    print(newmySalonID, newmyHDSname, newmyAdress, newmyWorkingHours,newmyServeGender,SCfavorNumber, newmyProvincePostCode)
+
+    print()
+
+    #savequery2 = "INSERT INTO HairdressingSalon(salonID, name, address, workingHours, serveGender, SCfavorNumber, provincePostcode) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    #val2 = (newmySalonID, newmyHDSname, newmyAdress,newmyWorkingHours,newmyServeGender,newmyProvincePostCode)
+    #mycursor.execute(savequery2, val2)
+    mycursor.execute("INSERT INTO HairdressingSalon VALUES(%s,%s,%s,%s,%s,%s,%s)", (int(newmySalonID), newmyHDSname, newmyAdress,int(newmyWorkingHours),newmyServeGender,SCfavorNumber,int(newmyProvincePostCode)))
+    db.commit()
+    """try:
+                    mycursor.execute(savequery, val)
+                    db.commit()
+                    myresult = mycursor.fetchall()
+                except:
+                    db.rollback()
+                    print("Error occured")"""
+
+        #clear the text boxes
     salonID.delete(0,END)
     HDSname.delete(0,END)
     address.delete(0,END)
@@ -261,10 +308,15 @@ def hairDresserAdd(x,y):
     serveGender.delete(0,END)
     #stars
     provincePostcode.delete(0,END)
-    text=int(x.get())
-    print(text)
+    addWindow()
+    
 
-def hairDresserDrop():
+
+def hairDresserDrop(mySalonID2):
+    newmySalonID =str(mySalonID2.get())
+    mycursor.execute("DELETE FROM HairdressingSalon WHERE HairdressingSalon.salonID= '%s'" % newmySalonID)
+    #db.commit()
+    print("DELETED")
     #clear the text boxes
     salonID.delete(0,END)
     HDSname.delete(0,END)
@@ -272,6 +324,7 @@ def hairDresserDrop():
     workingHours.delete(0,END)
     serveGender.delete(0,END)
     provincePostcode.delete(0,END)
+    dropWindow()
 
 def adminWindow():
     #root.destroy()
@@ -280,8 +333,6 @@ def adminWindow():
     window2_main.geometry("1100x400")
     window2_main.title('Demo')
     Label(window2_main).pack()
-
-
     #-----------------------------------------
     #ADD NEW HairDresser Saloon
 
@@ -336,10 +387,18 @@ def adminWindow():
 
     # Add new HairDresser Saloon Button
  
-    hairDressingSalonAddButton = Button(window2_main, text ="Add", command=lambda x = salonID, y = HDSname: hairDresserAdd(x,y))
+    hairDressingSalonAddButton = Button(window2_main, text ="Add", 
+        command=lambda 
+        mySalonID = salonID, 
+        myHDSname = HDSname, 
+        myAdress = address, 
+        myWorkingHours = workingHours, 
+        myServeGender = serveGender, 
+        myProvincePostCode = provincePostcode: 
+        hairDresserAdd(mySalonID,myHDSname,myAdress,myWorkingHours,myServeGender,myProvincePostCode))
     hairDressingSalonAddButton.place(x = 150, y = 220, width = 55)
 
-    hairDressingSalonDropButton = Button(window2_main, text ="Drop", command = hairDresserDrop)
+    hairDressingSalonDropButton = Button(window2_main, text ="Drop", command=lambda  mySalonID2 = salonID : hairDresserDrop(mySalonID2))
     hairDressingSalonDropButton.place(x = 200, y = 220, width = 55)
 
     #-----------------------------------------
