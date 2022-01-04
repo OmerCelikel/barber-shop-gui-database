@@ -1,5 +1,4 @@
 # Import modules
-import time
 import mysql.connector
 from tkinter import *
 from tkinter import ttk
@@ -73,6 +72,70 @@ def adminLoginWindow():
     btn.pack(side = RIGHT , padx =5)
     frame.pack(padx=100,pady = 19)
     adminLoginWindow.mainloop()
+def showCustDB():
+    showcustomerDB = Tk()
+    showcustomerDB.geometry("450x340")
+    showcustomerDB.title('Database')
+
+    style = ttk.Style()
+
+    #   Pick A Theme
+    style.theme_use('default')
+
+    # Configure the Treeview Colors
+    style.configure("Treeview",
+        background="#696969",
+        foreground="black",
+        rowheight=25,
+        fieldbackground="#696969")
+
+    # Change Selected Color
+    style.map('Treeview',
+        background=[('selected', "#347083")])
+
+    # Create a Treeview Frame
+    tree_frame = Frame(showcustomerDB)
+    tree_frame.pack(pady=10)
+
+    # Create a Treeview Scrollbar
+    tree_scroll = Scrollbar(tree_frame)
+    tree_scroll.pack(side=RIGHT, fill=Y)
+
+    # Create The Treeview
+    global my_treeC
+    my_treeC = ttk.Treeview(tree_frame, yscrollcommand=tree_scroll.set, selectmode="extended")
+    my_treeC.pack()
+
+    # Configure the Scrollbar
+    tree_scroll.config(command=my_treeC.yview)
+
+    # Define Our Columns
+    my_treeC['columns'] = ("SSN", "Name", "Surname", "Gender")
+
+    # Format Our Columns
+    my_treeC.column("#0", width=0, stretch=NO)
+    my_treeC.column("SSN", anchor=W, width=80)
+    my_treeC.column("Name", anchor=W, width=120)
+    my_treeC.column("Surname", anchor=W, width=120)
+    my_treeC.column("Gender", anchor=CENTER, width=80)
+
+
+
+    # Create Headings
+    my_treeC.heading("#0", text="", anchor=W)
+    my_treeC.heading("SSN", text="SSN", anchor=W)
+    my_treeC.heading("Name", text="Name", anchor=W)
+    my_treeC.heading("Surname", text="Surname", anchor=CENTER)
+    my_treeC.heading("Gender", text="Gender", anchor=CENTER)
+
+
+    # Create Striped Row Tags
+    my_treeC.tag_configure('oddrow', background="#0c661b")
+    my_treeC.tag_configure('evenrow', background="#364238")
+
+    # Run to pull data from database on start
+    query_databaseForCustomer()
+
 
 def showemployeeDB():
     showemployeeDB = Tk()
@@ -264,7 +327,6 @@ def bookedSuccessfully(serviceName, hairDresserName, bookedTime):
         print(i)
     mycursor.execute("DELETE FROM avbDates WHERE avbDates.employeeSSN = '%s' AND avbDates.datetime =  '%s'" %(hairdresserSSN,bookedTime))
     #db.commit()
-    time.sleep(1) # Sleep for 3 seconds
     salonWindow.destroy()
     global successfullWindow
     successfullWindow = Tk()
@@ -518,6 +580,21 @@ def query_database():
             my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]), tags=('evenrow',))
         else:
             my_tree.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3], record[4], record[5], record[6]), tags=('oddrow',))
+        # increment counter
+        count += 1
+
+def query_databaseForCustomer():
+    mycursor.execute("SELECT * FROM customer")
+    records = mycursor.fetchall()
+    # Add our data to the screen
+    global count
+    count = 0
+
+    for record in records:
+        if count % 2 == 0:
+            my_treeC.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3]), tags=('evenrow',))
+        else:
+            my_treeC.insert(parent='', index='end', iid=count, text='', values=(record[0], record[1], record[2], record[3]), tags=('oddrow',))
         # increment counter
         count += 1
 
@@ -858,6 +935,10 @@ def adminWindow():
     )
 
     adminPanelExitButton.place(x = 1000, y = 450)
+
+    showHDSDBbtn2 = Button(window2_main, text ="Show Customers", command = showCustDB)
+    showHDSDBbtn2.place(x = 45, y = 450, width = 120)
+
     window2_main.mainloop()
 
 def bookWindow():
